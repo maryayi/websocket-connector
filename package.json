@@ -1,0 +1,22 @@
+{
+  "name": "websocket-connector",
+  "version": "0.1.0",
+  "description": "A js library for managing websocket connection management",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Carrene/websocket-connector.git"
+  },
+  "keywords": [
+    "websocket"
+  ],
+  "author": "Mahdi Aryayi <mahdiaryayi@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Carrene/websocket-connector/issues"
+  },
+  "homepage": "https://github.com/Carrene/websocket-connector#readme"
+}
