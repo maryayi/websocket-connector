@@ -4,7 +4,8 @@
   "description": "A js library for managing websocket connection management",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "live-server src/"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Carrene/websocket-connector/issues"
   },
-  "homepage": "https://github.com/Carrene/websocket-connector#readme"
+  "homepage": "https://github.com/Carrene/websocket-connector#readme",
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
 }
