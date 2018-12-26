@@ -4,12 +4,15 @@ export default class Connection {
     this.socket = null
     this.url = options.url
     this.authorization = options.authorization || null
-    this._timeoutHandler = null
-    this._echoTimeoutHandler = null
-    this._errorHandlerTimeout = null
-    this.connectionTimeout = options.connectionTimeout || 2000
-    this.echoTimeout = options.echoTimeout || 5000
-    this._DynamicTimeout = this.connectionTimeout
+    this.connectionInterval = options.connectionInterval || 4000
+    this.keepAliveInterval = options.keepAliveInterval || 5000
+    this.keepAliveTimeout = options.keepAliveTimeout || 30000
+    this._previousConnectionInterval = null
+    this._previousKeepAliveTimeout = null
+    this._previousKeepAliveInterval = null
+    this._connectionIntervalHandler = null
+    this._keepAliveTimeoutHandler = null
+    this._keepAliveIntervalHandler = null
     this.connect()
   }
   connect() {
@@ -17,26 +20,22 @@ export default class Connection {
     this.socket.onopen = () => {
       console.log('open')
       this.isOnline = true
-      this._DynamicTimeout = this.connectionTimeout
-      this.sendEchoMessage()
+      this.sendKeepAlive()
     }
     this.socket.onclose = () => {
       console.log('close')
       this.isOnline = false
       if (navigator.onLine) {
-        this._timeoutHandler = setTimeout(() => {
+        this._connectionIntervalHandler = setTimeout(() => {
           this.connect()
-        }, this._DynamicTimeout)
-        this._DynamicTimeout *= 2
-        if (this._DynamicTimeout >= 60000) {
-          this._DynamicTimeout = 60000
-        }
+        }, this.getConnectionInterval())
       } else {
         window.addEventListener('online', () => {
           this.connect()
         })
-        if (this._timeoutHandler) {
-          clearInterval(this._timeoutHandler)
+        if (this._connectionIntervalHandler) {
+          clearTimeout(this._connectionIntervalHandler)
+          this._previousConnectionInterval = null
         }
       }
     }
@@ -45,22 +44,25 @@ export default class Connection {
       this.isOnline = false
     }
     this.socket.onmessage = (message) => {
-      if (this._echoTimeoutHandler) {
-        clearInterval(this._echoTimeoutHandler)
+      if (this._keepAliveIntervalHandler) {
+        clearTimeout(this._keepAliveIntervalHandler)
+        this._previousKeepAliveInterval = null
       }
-      if (this._errorHandlerTimeout) {
-        clearInterval(this._errorHandlerTimeout)
+      if (this._keepAliveTimeoutHandler) {
+        clearTimeout(this._keepAliveTimeoutHandler)
+        this._previousKeepAliveTimeout = null
       }
-      this._echoTimeoutHandler = setTimeout(() => {
-        this.sendEchoMessage()
-      }, this.echoTimeout)
+      this._keepAliveIntervalHandler = setTimeout(() => {
+        this.sendKeepAlive()
+      }, this.getKeepAliveInterval())
       console.log(message.data)
     }
   }
   disconnect() {
     this.socket.close()
-    if (this._timeoutHandler) {
-      clearInterval(this._timeoutHandler)
+    if (this._connectionIntervalHandler) {
+      clearTimeout(this._connectionIntervalHandler)
+      this._previousConnectionInterval = null
     }
   }
   send(message) {
@@ -68,11 +70,32 @@ export default class Connection {
       this.socket.send(message)
     }
   }
-  sendEchoMessage() {
-    this.send('echo')
-    this._errorHandlerTimeout = setTimeout(() => {
+  sendKeepAlive() {
+    this.send('keep-alive')
+    this._keepAliveTimeoutHandler = setTimeout(() => {
       this.socket.close()
       this.isOnline = false
-    }, this.echoTimeout)
+    }, this.getKeepAliveTimeout())
+  }
+  getConnectionInterval() {
+    if (typeof this.connectionInterval === 'function') {
+      return this._previousConnectionInterval = this.connectionInterval(this._previousConnectionInterval)
+    } else {
+      return this.connectionInterval
+    }
+  }
+  getKeepAliveInterval() {
+    if (typeof this.keepAliveInterval === 'function') {
+      return this._previousKeepAliveInterval = this.keepAliveInterval(this._previousKeepAliveInterval)
+    } else {
+      return this.keepAliveInterval
+    }
+  }
+  getKeepAliveTimeout() {
+    if (typeof this.keepAliveTimeout === 'function') {
+      return this._previousKeepAliveTimeout = this.keepAliveTimeout(this._previousKeepAliveTimeout)
+    } else {
+      return this.keepAliveTimeout
+    }
   }
 }
