@@ -1,11 +1,14 @@
 {
-  "name": "websocket-connector",
+  "name": "@carrene/websocket-connector",
+  "main": "dist/@carrene/websocket-connector.js",
+  "module": "dist/@carrene/websocket-connector.js",
   "version": "0.1.0",
   "description": "A js library for managing websocket connection management",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "live-server src/"
+    "serve": "live-server src/",
+    "build": "webpack",
+    "publish:scoped": "npm publish --access public"
   },
   "repository": {
     "type": "git",
@@ -21,6 +24,17 @@
   },
   "homepage": "https://github.com/Carrene/websocket-connector#readme",
   "devDependencies": {
-    "live-server": "^1.2.1"
+    "@babel/core": "^7.2.2",
+    "babel-loader": "^8.0.4",
+    "eslint": "^5.11.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-loader": "^2.1.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "live-server": "^1.2.1",
+    "webpack": "^4.28.2",
+    "webpack-cli": "^3.1.2"
   }
 }

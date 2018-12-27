@@ -1,5 +1,5 @@
 export default class Connection {
-  constructor(options) {
+  constructor (options) {
     this.isOnline = false
     this.socket = null
     this.url = options.url
@@ -15,8 +15,9 @@ export default class Connection {
     this._keepAliveIntervalHandler = null
     this.connect()
   }
-  connect() {
-    this.socket = new WebSocket(this.url)
+  connect () {
+    // FIXME: Change 'Authorization' to 'authorization'
+    this.socket = new window.WebSocket(`${this.url}?Authorization=${this.authorization}`)
     this.socket.onopen = () => {
       console.log('open')
       this.isOnline = true
@@ -58,42 +59,45 @@ export default class Connection {
       console.log(message.data)
     }
   }
-  disconnect() {
+  disconnect () {
     this.socket.close()
     if (this._connectionIntervalHandler) {
       clearTimeout(this._connectionIntervalHandler)
       this._previousConnectionInterval = null
     }
   }
-  send(message) {
+  send (message) {
     if (this.socket) {
       this.socket.send(message)
     }
   }
-  sendKeepAlive() {
+  sendKeepAlive () {
     this.send('keep-alive')
     this._keepAliveTimeoutHandler = setTimeout(() => {
       this.socket.close()
       this.isOnline = false
     }, this.getKeepAliveTimeout())
   }
-  getConnectionInterval() {
+  getConnectionInterval () {
     if (typeof this.connectionInterval === 'function') {
-      return this._previousConnectionInterval = this.connectionInterval(this._previousConnectionInterval)
+      this._previousConnectionInterval = this.connectionInterval(this._previousConnectionInterval)
+      return this._previousConnectionInterval
     } else {
       return this.connectionInterval
     }
   }
-  getKeepAliveInterval() {
+  getKeepAliveInterval () {
     if (typeof this.keepAliveInterval === 'function') {
-      return this._previousKeepAliveInterval = this.keepAliveInterval(this._previousKeepAliveInterval)
+      this._previousKeepAliveInterval = this.keepAliveInterval(this._previousKeepAliveInterval)
+      return this._previousKeepAliveInterval
     } else {
       return this.keepAliveInterval
     }
   }
-  getKeepAliveTimeout() {
+  getKeepAliveTimeout () {
     if (typeof this.keepAliveTimeout === 'function') {
-      return this._previousKeepAliveTimeout = this.keepAliveTimeout(this._previousKeepAliveTimeout)
+      this._previousKeepAliveTimeout = this.keepAliveTimeout(this._previousKeepAliveTimeout)
+      return this._previousKeepAliveTimeout
     } else {
       return this.keepAliveTimeout
     }
