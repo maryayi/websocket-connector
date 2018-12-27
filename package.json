@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "live-server src/",
     "build": "webpack",
-    "publish:scoped": "npm publish --access public"
+    "publish:scoped": "npm run build && npm publish --access public"
   },
   "repository": {
     "type": "git",
