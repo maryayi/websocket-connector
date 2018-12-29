@@ -16,8 +16,7 @@ export default class Connection {
     this.connect()
   }
   connect () {
-    // FIXME: Change 'Authorization' to 'authorization'
-    this.socket = new window.WebSocket(`${this.url}?Authorization=${this.authorization}`)
+    this.socket = new window.WebSocket(`${this.url}?token=${this.authorization}`)
     this.socket.onopen = () => {
       console.log('open')
       this.isOnline = true
