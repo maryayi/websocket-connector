@@ -60,7 +60,6 @@ export default class Connection {
       }, this.getKeepAliveInterval())
       if (message.data !== `${this.keepAliveMessage}/answer`) {
         let messageEvent = new window.CustomEvent('message', {
-          bubbles: true,
           detail: JSON.parse(message.data)
         })
         document.body.dispatchEvent(messageEvent)
