@@ -2,11 +2,12 @@ export default class Connection {
   constructor (options) {
     this.isOnline = false
     this.socket = null
-    this.url = options.url
+    this.URL = options.URL
     this.authorization = options.authorization || null
     this.connectionInterval = options.connectionInterval || 4000
     this.keepAliveInterval = options.keepAliveInterval || 5000
     this.keepAliveTimeout = options.keepAliveTimeout || 30000
+    this.keepAliveMessage = options.keepAliveMessage || 'keep-alive'
     this._previousConnectionInterval = null
     this._previousKeepAliveTimeout = null
     this._previousKeepAliveInterval = null
@@ -16,7 +17,9 @@ export default class Connection {
     this.connect()
   }
   connect () {
-    this.socket = new window.WebSocket(`${this.url}?token=${this.authorization}`)
+    this.socket = new window.WebSocket(
+      `${this.URL}?token=${this.authorization}`
+    )
     this.socket.onopen = () => {
       console.log('open')
       this.isOnline = true
@@ -43,7 +46,7 @@ export default class Connection {
       console.log('error')
       this.isOnline = false
     }
-    this.socket.onmessage = (message) => {
+    this.socket.onmessage = message => {
       if (this._keepAliveIntervalHandler) {
         clearTimeout(this._keepAliveIntervalHandler)
         this._previousKeepAliveInterval = null
@@ -55,7 +58,13 @@ export default class Connection {
       this._keepAliveIntervalHandler = setTimeout(() => {
         this.sendKeepAlive()
       }, this.getKeepAliveInterval())
-      console.log(message.data)
+      if (message.data !== `${this.keepAliveMessage}/answer`) {
+        let messageEvent = new window.CustomEvent('message', {
+          bubbles: true,
+          detail: JSON.parse(message.data)
+        })
+        document.body.dispatchEvent(messageEvent)
+      }
     }
   }
   disconnect () {
@@ -71,7 +80,7 @@ export default class Connection {
     }
   }
   sendKeepAlive () {
-    this.send('keep-alive')
+    this.send(this.keepAliveMessage)
     this._keepAliveTimeoutHandler = setTimeout(() => {
       this.socket.close()
       this.isOnline = false
@@ -79,7 +88,9 @@ export default class Connection {
   }
   getConnectionInterval () {
     if (typeof this.connectionInterval === 'function') {
-      this._previousConnectionInterval = this.connectionInterval(this._previousConnectionInterval)
+      this._previousConnectionInterval = this.connectionInterval(
+        this._previousConnectionInterval
+      )
       return this._previousConnectionInterval
     } else {
       return this.connectionInterval
@@ -87,7 +98,9 @@ export default class Connection {
   }
   getKeepAliveInterval () {
     if (typeof this.keepAliveInterval === 'function') {
-      this._previousKeepAliveInterval = this.keepAliveInterval(this._previousKeepAliveInterval)
+      this._previousKeepAliveInterval = this.keepAliveInterval(
+        this._previousKeepAliveInterval
+      )
       return this._previousKeepAliveInterval
     } else {
       return this.keepAliveInterval
@@ -95,7 +108,9 @@ export default class Connection {
   }
   getKeepAliveTimeout () {
     if (typeof this.keepAliveTimeout === 'function') {
-      this._previousKeepAliveTimeout = this.keepAliveTimeout(this._previousKeepAliveTimeout)
+      this._previousKeepAliveTimeout = this.keepAliveTimeout(
+        this._previousKeepAliveTimeout
+      )
       return this._previousKeepAliveTimeout
     } else {
       return this.keepAliveTimeout
