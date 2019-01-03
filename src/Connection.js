@@ -21,12 +21,12 @@ export default class Connection {
       `${this.URL}?token=${this.authorization}`
     )
     this.socket.onopen = () => {
-      console.log('open')
+      console.log('websocket open')
       this.isOnline = true
       this.sendKeepAlive()
     }
     this.socket.onclose = () => {
-      console.log('close')
+      console.log('websocket close')
       this.isOnline = false
       if (navigator.onLine) {
         this._connectionIntervalHandler = setTimeout(() => {
@@ -43,7 +43,7 @@ export default class Connection {
       }
     }
     this.socket.onerror = () => {
-      console.log('error')
+      console.log('websocket error')
       this.isOnline = false
     }
     this.socket.onmessage = message => {
