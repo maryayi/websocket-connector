@@ -1,4 +1,4 @@
 export {
-  default as Connection
+  default as WebsocketConnection
 }
-  from './Connection.js'
+  from './WebsocketConnection.js'

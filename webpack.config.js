@@ -21,7 +21,8 @@ module.exports = {
     }
   },
   module: {
-    rules: [{
+    rules: [
+      {
         enforce: 'pre',
         test: /\.js$/,
         loader: 'eslint-loader',

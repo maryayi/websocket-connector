@@ -1,5 +1,5 @@
-import Connection from './Connection.js'
-let connection = new Connection({
+import WebsocketConnection from './WebsocketConnection.js'
+let connection = new WebsocketConnection({
   URL: 'ws://localhost:8085',
   authorization: window.localStorage.getItem('token')
 })

@@ -1,8 +1,8 @@
-export default class Connection {
+export default class WebsocketConnection {
   constructor (options) {
     this.isOnline = false
     this.socket = null
-    this.URL = options.URL
+    this.url = options.url
     this.authorization = options.authorization || null
     this.connectionInterval = options.connectionInterval || 4000
     this.keepAliveInterval = options.keepAliveInterval || 5000
@@ -18,7 +18,7 @@ export default class Connection {
   }
   connect () {
     this.socket = new window.WebSocket(
-      `${this.URL}?token=${this.authorization}`
+      `${this.url}?token=${this.authorization}`
     )
     this.socket.onopen = () => {
       console.log('websocket open')
