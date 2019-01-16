@@ -4,8 +4,8 @@ export default class WebsocketConnection {
     this.socket = null
     this.url = options.url
     this.authorization = options.authorization || null
-    this.connectionInterval = options.connectionInterval || 4000
-    this.keepAliveInterval = options.keepAliveInterval || 5000
+    this.connectionInterval = options.connectionInterval || 10000
+    this.keepAliveInterval = options.keepAliveInterval || 15000
     this.keepAliveTimeout = options.keepAliveTimeout || 30000
     this.keepAliveMessage = options.keepAliveMessage || 'keep-alive'
     this._previousConnectionInterval = null
