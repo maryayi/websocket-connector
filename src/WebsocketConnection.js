@@ -67,7 +67,7 @@ export default class WebsocketConnection {
         this.sendKeepAlive()
       }, this.getKeepAliveInterval())
       if (message.data !== `${this.keepAliveMessage}/answer`) {
-        let messageObject = JSON.parse(message.date)
+        let messageObject = JSON.parse(message.data)
         this.__registry__.forEach(item => {
           if (messageObject.mimetype.match(item.pattern)) {
             item.callback(messageObject)
