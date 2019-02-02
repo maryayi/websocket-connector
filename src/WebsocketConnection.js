@@ -1,8 +1,14 @@
+let instance = null
+
 export default class WebsocketConnection {
-  constructor (options) {
+  constructor (url, options) {
+    if (instance) {
+      return instance
+    }
     this.isOnline = false
     this.socket = null
-    this.url = options.url
+    this.__registry__ = []
+    this.url = url
     this.authorization = options.authorization || null
     this.connectionInterval = options.connectionInterval || 10000
     this.keepAliveInterval = options.keepAliveInterval || 15000
@@ -14,12 +20,14 @@ export default class WebsocketConnection {
     this._connectionIntervalHandler = null
     this._keepAliveTimeoutHandler = null
     this._keepAliveIntervalHandler = null
-    this.connect()
+    instance = this
   }
+
   connect () {
-    this.socket = new window.WebSocket(
-      `${this.url}?token=${this.authorization}`
-    )
+    let resolvedURL = this.authorization
+      ? `${this.url}?token=${this.authorization}`
+      : this.url
+    this.socket = new window.WebSocket(resolvedURL)
     this.socket.onopen = () => {
       console.log('websocket open')
       this.isOnline = true
@@ -59,10 +67,12 @@ export default class WebsocketConnection {
         this.sendKeepAlive()
       }, this.getKeepAliveInterval())
       if (message.data !== `${this.keepAliveMessage}/answer`) {
-        let messageEvent = new window.CustomEvent('message', {
-          detail: JSON.parse(message.data)
+        let messageObject = JSON.parse(message.date)
+        this.__registry__.forEach(item => {
+          if (messageObject.mimetype.match(item.pattern)) {
+            item.callback(messageObject)
+          }
         })
-        document.body.dispatchEvent(messageEvent)
       }
     }
   }
@@ -77,6 +87,17 @@ export default class WebsocketConnection {
     if (this.socket) {
       this.socket.send(message)
     }
+  }
+  registerCallback (mimetypeRegex, callback) {
+    this.__registry__.push({
+      pattern: mimetypeRegex,
+      callback: callback
+    })
+  }
+  unregisterCallback (mimetypeRegex) {
+    this.__registry__ = this.__registry__.filter(item => {
+      return item.pattern !== mimetypeRegex
+    })
   }
   sendKeepAlive () {
     this.send(this.keepAliveMessage)
