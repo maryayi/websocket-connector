@@ -10,7 +10,7 @@ export default class WebsocketConnection {
     this.socket = null
     this.__registry__ = []
     this.url = url
-    this.authorization = options.authorization || null
+    this.authenticator = options.authenticator || null
     this.connectionInterval = options.connectionInterval || 10000
     this.keepAliveInterval = options.keepAliveInterval || 15000
     this.keepAliveTimeout = options.keepAliveTimeout || 30000
@@ -25,8 +25,8 @@ export default class WebsocketConnection {
   }
 
   connect () {
-    let resolvedURL = this.authorization
-      ? `${this.url}?token=${this.authorization}`
+    let resolvedURL = this.authenticator
+      ? `${this.url}?token=${this.authenticator.token}`
       : this.url
     this.socket = new window.WebSocket(resolvedURL)
     this.socket.onopen = () => {
