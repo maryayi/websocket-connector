@@ -1,8 +1,9 @@
-let instance = null
+import { isEquivalent } from './helpers.js'
 
+let instance = null
 export default class WebsocketConnection {
   constructor (url, options) {
-    if (instance) {
+    if (instance instanceof WebsocketConnection) {
       return instance
     }
     this.isOnline = false
@@ -69,9 +70,16 @@ export default class WebsocketConnection {
       if (message.data !== `${this.keepAliveMessage}/answer`) {
         let messageObject = JSON.parse(message.data)
         this.__registry__.forEach(item => {
-          if (messageObject.mimetype.match(item.pattern)) {
-            item.callback(messageObject)
+          let filterNames = Object.keys(item.filters)
+          for (let filter of filterNames) {
+            if (
+              !messageObject.hasOwnProperty(filter) ||
+              !messageObject[filter].match(item.filters[filter])
+            ) {
+              return
+            }
           }
+          item.callback(messageObject)
         })
       }
     }
@@ -88,15 +96,15 @@ export default class WebsocketConnection {
       this.socket.send(message)
     }
   }
-  registerCallback (mimetypeRegex, callback) {
+  registerCallback (filters, callback) {
     this.__registry__.push({
-      pattern: mimetypeRegex,
+      filters: filters,
       callback: callback
     })
   }
-  unregisterCallback (mimetypeRegex) {
+  unregisterCallback (filters) {
     this.__registry__ = this.__registry__.filter(item => {
-      return item.pattern !== mimetypeRegex
+      return !isEquivalent(item.filters, filters)
     })
   }
   sendKeepAlive () {
