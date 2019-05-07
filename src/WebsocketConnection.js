@@ -31,11 +31,17 @@ export default class WebsocketConnection {
     this.socket = new window.WebSocket(resolvedURL)
     this.socket.onopen = () => {
       console.log('websocket open')
+      document.dispatchEvent(
+        new window.CustomEvent('wsopen', { bubbles: true })
+      )
       this.isOnline = true
       this.sendKeepAlive()
     }
     this.socket.onclose = () => {
       console.log('websocket close')
+      document.dispatchEvent(
+        new window.CustomEvent('wsclose', { bubbles: true })
+      )
       this.isOnline = false
       if (navigator.onLine) {
         this._connectionIntervalHandler = setTimeout(() => {
@@ -53,6 +59,9 @@ export default class WebsocketConnection {
     }
     this.socket.onerror = () => {
       console.log('websocket error')
+      document.dispatchEvent(
+        new window.CustomEvent('wserror', { bubbles: true })
+      )
       this.isOnline = false
     }
     this.socket.onmessage = message => {
