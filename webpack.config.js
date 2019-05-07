@@ -1,12 +1,13 @@
 var path = require('path')
-var libraryName = '@carrene/websocket-connector'
+var libraryName = 'websocket-connector'
 var outputFile = libraryName + '.js'
 var src = path.resolve(__dirname, 'src')
 
 module.exports = {
   context: src,
+  mode: 'production',
   entry: {
-    '@carrene/websocket-connector': './index.js'
+    'websocket-connector': './index.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -17,7 +18,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@carrene/websocket-connector': path.resolve(__dirname, 'src')
+      'websocket-connector': path.resolve(__dirname, 'src')
     }
   },
   module: {
