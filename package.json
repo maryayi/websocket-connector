@@ -1,18 +1,18 @@
 {
-  "name": "@carrene/websocket-connector",
-  "main": "dist/@carrene/websocket-connector.js",
-  "module": "dist/@carrene/websocket-connector.js",
-  "version": "0.6.1",
+  "name": "websocket-connector",
+  "main": "dist/websocket-connector.js",
+  "module": "dist/websocket-connector.js",
+  "version": "0.6.2",
   "description": "A js library for managing websocket connection management",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "live-server src/",
     "build": "webpack",
-    "publish:scoped": "npm run build && npm publish --access public"
+    "prepublishOnly": "npm install && npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Carrene/websocket-connector.git"
+    "url": "git+https://github.com/maryayi/websocket-connector.git"
   },
   "keywords": [
     "websocket"
@@ -20,9 +20,9 @@
   "author": "Mahdi Aryayi <mahdiaryayi@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Carrene/websocket-connector/issues"
+    "url": "https://github.com/maryayi/websocket-connector/issues"
   },
-  "homepage": "https://github.com/Carrene/websocket-connector#readme",
+  "homepage": "https://github.com/maryayi/websocket-connector#readme",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "babel-loader": "^8.0.4",
