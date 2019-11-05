@@ -2,7 +2,7 @@
   "name": "websocket-connector",
   "main": "dist/websocket-connector.js",
   "module": "dist/websocket-connector.js",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "A js library for managing websocket connection management",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
