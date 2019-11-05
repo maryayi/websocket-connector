@@ -83,7 +83,7 @@ export default class WebsocketConnection {
           for (let filter of filterNames) {
             if (
               !messageObject.hasOwnProperty(filter) ||
-              !messageObject[filter].match(item.filters[filter])
+              !item.filters[filter].test(messageObject[filter])
             ) {
               return
             }
