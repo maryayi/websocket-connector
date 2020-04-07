@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "live-server src/",
     "build": "webpack",
-    "prepublishOnly": "npm install && npm run build"
+    "prepublishOnly": "npm ci && npm run build"
   },
   "repository": {
     "type": "git",
