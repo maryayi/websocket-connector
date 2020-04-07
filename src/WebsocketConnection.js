@@ -39,6 +39,14 @@ export default class WebsocketConnection {
     }
     this.socket.onclose = () => {
       console.log('websocket close')
+      if (this._keepAliveIntervalHandler) {
+        clearTimeout(this._keepAliveIntervalHandler)
+        this._previousKeepAliveInterval = null
+      }
+      if (this._keepAliveTimeoutHandler) {
+        clearTimeout(this._keepAliveTimeoutHandler)
+        this._previousKeepAliveTimeout = null
+      }
       document.dispatchEvent(
         new window.CustomEvent('wsclose', { bubbles: true })
       )
@@ -101,7 +109,7 @@ export default class WebsocketConnection {
     }
   }
   send (message) {
-    if (this.socket) {
+    if (this.socket && this.socket.readyState === this.socket.OPEN) {
       this.socket.send(message)
     }
   }
